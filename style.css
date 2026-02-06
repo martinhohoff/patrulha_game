@@ -1,0 +1,239 @@
+:root {
+  --sky: #8fd3ff;
+  --grass: #5fd068;
+  --track: rgba(255, 255, 255, 0.85);
+  --accent: #ffb400;
+  --dark: #1b1b1b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Cooper Black", "Arial Black", "Trebuchet MS", "Verdana", sans-serif;
+  background: url("background.jpg") center/cover no-repeat fixed;
+  min-height: 100vh;
+  color: var(--dark);
+}
+
+#app {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(143, 211, 255, 0.65), rgba(95, 208, 104, 0.2));
+}
+
+.screen {
+  width: min(1100px, 95vw);
+  min-height: 85vh;
+  background: var(--track);
+  border-radius: 24px;
+  padding: 24px;
+  display: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.screen.active { display: grid; }
+
+#start-screen {
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.start-left h1 { font-size: 2.4rem; margin: 12px 0 6px; }
+
+.start-left p { font-size: 1.1rem; }
+
+.ryder-big {
+  width: 220px;
+  height: auto;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.choices {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.choices button {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  border: none;
+  font-size: 1.6rem;
+  background: var(--accent);
+  color: #1b1b1b;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+
+.choices button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+
+.poster {
+  background: rgba(255,255,255,0.8);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.poster-title { font-weight: bold; margin-bottom: 12px; }
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.poster-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.poster-card img { width: 100%; height: 80px; object-fit: contain; }
+
+.hint { margin-top: 16px; font-size: 1rem; }
+
+#game-screen {
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+}
+
+.ryder-corner {
+  position: absolute;
+  left: 0px;
+  bottom: var(--road-offset);
+  width: 180px;
+  z-index: 2;
+}
+
+.hud-center { text-align: center; }
+
+.label { font-size: 1.2rem; color: #0b3d91; text-shadow: 1px 1px 0 #fff; }
+
+.target {
+  font-size: 6.5rem;
+  font-weight: bold;
+  display: inline-block;
+  padding: 6px 12px;
+  color: #0b3d91;
+  text-shadow:
+    0 3px 0 #ffffff,
+    0 6px 10px rgba(0,0,0,0.25);
+  line-height: 1;
+}
+
+.progress { font-size: 1.2rem; text-align: right; }
+
+.track {
+  position: relative;
+  height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  --road-offset: 10px;
+  padding-left: 40px;
+}
+
+.character {
+  position: absolute;
+  bottom: var(--road-offset);
+  left: 20px;
+  width: 120px;
+  height: 120px;
+  transition: left 0.6s ease;
+  z-index: 2;
+}
+
+.character img { width: 100%; height: 100%; object-fit: contain; }
+
+.character.jump { animation: jump 0.6s ease; }
+
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-140px); }
+  100% { transform: translateY(0); }
+}
+
+.obstacles {
+  position: absolute;
+  bottom: var(--road-offset);
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 1;
+}
+
+.obstacle {
+  position: absolute;
+  bottom: 0;
+  width: 90px;
+  height: 90px;
+  background: url("obstacle.png") center/contain no-repeat;
+}
+
+.treat {
+  position: absolute;
+  right: 30px;
+  bottom: calc(var(--road-offset) + 20px);
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  animation: float 1.8s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+.instruction {
+  text-align: center;
+  font-size: 1.4rem;
+  padding-bottom: 8px;
+}
+
+#end-screen {
+  place-items: center;
+  text-align: center;
+}
+
+#end-screen h2 { font-size: 2.4rem; }
+
+#restart {
+  font-size: 1.2rem;
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  #start-screen {
+    grid-template-columns: 1fr;
+  }
+
+  .hud {
+    grid-template-columns: 60px 1fr 80px;
+  }
+
+  .target { font-size: 3.4rem; }
+}

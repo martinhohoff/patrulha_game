@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aprender Letras e Numeros</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <section id="start-screen" class="screen active">
+      <div class="start-left">
+        <img src="ryder.png" alt="Ryder" class="ryder-big" />
+        <h1>Aprender Letras e Numeros</h1>
+        <p>Escolha um personagem apertando o numero de 1 a 6.</p>
+        <div class="choices" aria-label="Escolha de personagens">
+          <button data-id="1" aria-label="Marshall">1</button>
+          <button data-id="2" aria-label="Rubble">2</button>
+          <button data-id="3" aria-label="Chase">3</button>
+          <button data-id="4" aria-label="Rocky">4</button>
+          <button data-id="5" aria-label="Zuma">5</button>
+          <button data-id="6" aria-label="Skye">6</button>
+        </div>
+      </div>
+      <div class="start-right">
+        <div class="poster">
+          <div class="poster-title">Personagens</div>
+          <div class="poster-grid" id="poster-grid"></div>
+        </div>
+        <p class="hint">Dica: depois, pressione a letra ou o numero que aparecer.</p>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen">
+      <header class="hud">
+        <div></div>
+        <div class="hud-center">
+          <div class="label" id="prompt-label">Letra</div>
+          <div class="target" id="target-display">A</div>
+        </div>
+        <div class="progress" id="progress">0/10</div>
+      </header>
+
+      <div class="track" id="track">
+        <img src="ryder.png" alt="Ryder pequeno" class="ryder-corner" />
+        <div class="character" id="character">
+          <img id="character-img" src="" alt="Personagem" />
+        </div>
+        <div class="obstacles" id="obstacles"></div>
+        <img src="treat.webp" alt="Biscoito" class="treat" />
+      </div>
+
+      <div class="instruction" id="instruction">Aperte a letra certa</div>
+    </section>
+
+    <section id="end-screen" class="screen">
+      <h2>Parabéns, você chegou até o biscoito!</h2>
+      <p>Aperte qualquer tecla para jogar de novo.</p>
+      <button id="restart">Jogar de novo</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
