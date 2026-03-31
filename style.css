@@ -296,8 +296,18 @@ body {
   }
 }
 
-@media (hover: none) and (pointer: coarse) and (max-width: 900px) {
+body.mobile-mode .mobile-keyboard {
+  display: grid;
+}
+
+@media (max-width: 900px) {
   .mobile-keyboard {
-    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-key {
+    min-height: 48px;
+    font-size: 1.15rem;
   }
 }

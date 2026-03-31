@@ -35,7 +35,18 @@ let endX = 0;
 let stepDistance = 110;
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const isTouchPhone = window.matchMedia('(hover: none) and (pointer: coarse) and (max-width: 900px)');
+
+function isPhoneLikeDevice() {
+  return window.innerWidth <= 900 && (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
+}
+
+function applyMobileMode() {
+  document.body.classList.toggle('mobile-mode', isPhoneLikeDevice());
+}
 
 function buildMobileKeyboard() {
   letters.forEach((letter) => {
@@ -74,7 +85,7 @@ function buildPoster() {
 function showScreen(screen) {
   [startScreen, gameScreen, endScreen].forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
-  document.body.classList.toggle('using-touch-phone', screen === gameScreen && isTouchPhone.matches);
+  document.body.classList.toggle('using-touch-phone', screen === gameScreen && isPhoneLikeDevice());
 }
 
 function speak(text, lang = 'pt-BR') {
@@ -188,7 +199,7 @@ function startGame() {
   progressEl.textContent = `${currentStep}/${stepsTotal}`;
   isActive = true;
   inputLocked = true;
-  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
+  instructionEl.textContent = isPhoneLikeDevice() ? 'Toque na letra certa' : 'Aperte a letra certa';
   showScreen(gameScreen);
   requestAnimationFrame(() => {
     computeTrackMetrics();
@@ -200,14 +211,14 @@ function startGame() {
 
 function finishGame() {
   isActive = false;
-  endInstructionEl.textContent = isTouchPhone.matches
+  endInstructionEl.textContent = isPhoneLikeDevice()
     ? 'Toque em "Jogar de novo" para brincar mais uma vez.'
     : 'Aperte qualquer tecla para jogar de novo.';
   playCelebration();
   playApplause();
   setTimeout(() => {
     speak(
-      isTouchPhone.matches
+      isPhoneLikeDevice()
         ? 'Parabéns, você chegou até o biscoito! Toque em jogar de novo para brincar mais uma vez.'
         : 'Parabéns, você chegou até o biscoito! Aperte qualquer tecla para jogar de novo'
     );
@@ -255,7 +266,7 @@ async function selectCharacter(id) {
   speak('Vamos lá!');
   await new Promise(r => setTimeout(r, 1000));
   speak(`Letra ${firstLetter}`);
-  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
+  instructionEl.textContent = isPhoneLikeDevice() ? 'Toque na letra certa' : 'Aperte a letra certa';
   inputLocked = false;
   updateMobileKeyboard();
 }
@@ -284,18 +295,15 @@ restartBtn.addEventListener('click', () => {
 });
 
 const handleTouchModeChange = () => {
-  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
-  endInstructionEl.textContent = isTouchPhone.matches
+  applyMobileMode();
+  instructionEl.textContent = isPhoneLikeDevice() ? 'Toque na letra certa' : 'Aperte a letra certa';
+  endInstructionEl.textContent = isPhoneLikeDevice()
     ? 'Toque em "Jogar de novo" para brincar mais uma vez.'
     : 'Aperte qualquer tecla para jogar de novo.';
-  document.body.classList.toggle('using-touch-phone', gameScreen.classList.contains('active') && isTouchPhone.matches);
+  document.body.classList.toggle('using-touch-phone', gameScreen.classList.contains('active') && isPhoneLikeDevice());
 };
 
-if (typeof isTouchPhone.addEventListener === 'function') {
-  isTouchPhone.addEventListener('change', handleTouchModeChange);
-} else if (typeof isTouchPhone.addListener === 'function') {
-  isTouchPhone.addListener(handleTouchModeChange);
-}
+window.addEventListener('resize', handleTouchModeChange);
 
 buildPoster();
 buildMobileKeyboard();
