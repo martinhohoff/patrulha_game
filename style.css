@@ -276,8 +276,13 @@ body {
     padding: 16px;
   }
 
+  #game-screen {
+    grid-template-rows: auto minmax(220px, 1fr) auto auto;
+    align-content: start;
+  }
+
   .track {
-    height: 300px;
+    height: 240px;
     padding-left: 16px;
   }
 
@@ -294,16 +299,17 @@ body {
     font-size: 1.15rem;
     padding-bottom: 0;
   }
-}
 
-body.mobile-mode .mobile-keyboard {
-  display: grid;
-}
-
-@media (max-width: 900px) {
   .mobile-keyboard {
+    display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 8px;
+    position: sticky;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 18px;
+    padding: 12px 8px calc(12px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -8px 24px rgba(11, 61, 145, 0.12);
   }
 
   .mobile-key {
