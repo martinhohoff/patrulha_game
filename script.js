@@ -11,6 +11,8 @@ const restartBtn = document.getElementById('restart');
 const posterGrid = document.getElementById('poster-grid');
 const track = document.getElementById('track');
 const instructionEl = document.getElementById('instruction');
+const mobileKeyboard = document.getElementById('mobile-keyboard');
+const endInstructionEl = document.getElementById('end-instruction');
 
 const characters = {
   1: { name: 'Marshall', say: 'Márchal', file: '1_marshall.png' },
@@ -33,6 +35,29 @@ let endX = 0;
 let stepDistance = 110;
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const isTouchPhone = window.matchMedia('(hover: none) and (pointer: coarse) and (max-width: 900px)');
+
+function buildMobileKeyboard() {
+  letters.forEach((letter) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'mobile-key';
+    button.textContent = letter;
+    button.setAttribute('aria-label', `Letra ${letter}`);
+    button.dataset.letter = letter;
+    button.addEventListener('click', () => handleKeyInput(letter));
+    mobileKeyboard.appendChild(button);
+  });
+  updateMobileKeyboard();
+}
+
+function updateMobileKeyboard() {
+  if (!mobileKeyboard) return;
+  mobileKeyboard.querySelectorAll('.mobile-key').forEach((button) => {
+    button.disabled = !isActive || inputLocked;
+    button.classList.toggle('is-target', button.dataset.letter === currentTarget && isActive && !inputLocked);
+  });
+}
 
 function buildPoster() {
   Object.entries(characters).forEach(([id, info]) => {
@@ -49,6 +74,7 @@ function buildPoster() {
 function showScreen(screen) {
   [startScreen, gameScreen, endScreen].forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
+  document.body.classList.toggle('using-touch-phone', screen === gameScreen && isTouchPhone.matches);
 }
 
 function speak(text, lang = 'pt-BR') {
@@ -149,6 +175,7 @@ function setTarget(letter) {
   currentTarget = letter;
   promptLabel.textContent = currentType;
   targetDisplay.textContent = currentTarget;
+  updateMobileKeyboard();
 }
 
 function nextTarget() {
@@ -161,22 +188,32 @@ function startGame() {
   progressEl.textContent = `${currentStep}/${stepsTotal}`;
   isActive = true;
   inputLocked = true;
+  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
   showScreen(gameScreen);
   requestAnimationFrame(() => {
     computeTrackMetrics();
     character.style.left = `${startX}px`;
     resetObstacles();
   });
+  updateMobileKeyboard();
 }
 
 function finishGame() {
   isActive = false;
+  endInstructionEl.textContent = isTouchPhone.matches
+    ? 'Toque em "Jogar de novo" para brincar mais uma vez.'
+    : 'Aperte qualquer tecla para jogar de novo.';
   playCelebration();
   playApplause();
   setTimeout(() => {
-    speak('Parabéns, você chegou até o biscoito! Aperte qualquer tecla para jogar de novo');
+    speak(
+      isTouchPhone.matches
+        ? 'Parabéns, você chegou até o biscoito! Toque em jogar de novo para brincar mais uma vez.'
+        : 'Parabéns, você chegou até o biscoito! Aperte qualquer tecla para jogar de novo'
+    );
   }, 900);
   showScreen(endScreen);
+  updateMobileKeyboard();
 }
 
 function correctAnswer() {
@@ -218,8 +255,9 @@ async function selectCharacter(id) {
   speak('Vamos lá!');
   await new Promise(r => setTimeout(r, 1000));
   speak(`Letra ${firstLetter}`);
-  instructionEl.textContent = 'Aperte a letra certa';
+  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
   inputLocked = false;
+  updateMobileKeyboard();
 }
 
 function setupStartButtons() {
@@ -245,6 +283,22 @@ restartBtn.addEventListener('click', () => {
   showScreen(startScreen);
 });
 
+const handleTouchModeChange = () => {
+  instructionEl.textContent = isTouchPhone.matches ? 'Toque na letra certa' : 'Aperte a letra certa';
+  endInstructionEl.textContent = isTouchPhone.matches
+    ? 'Toque em "Jogar de novo" para brincar mais uma vez.'
+    : 'Aperte qualquer tecla para jogar de novo.';
+  document.body.classList.toggle('using-touch-phone', gameScreen.classList.contains('active') && isTouchPhone.matches);
+};
+
+if (typeof isTouchPhone.addEventListener === 'function') {
+  isTouchPhone.addEventListener('change', handleTouchModeChange);
+} else if (typeof isTouchPhone.addListener === 'function') {
+  isTouchPhone.addListener(handleTouchModeChange);
+}
+
 buildPoster();
+buildMobileKeyboard();
 setupStartButtons();
 showScreen(startScreen);
+handleTouchModeChange();

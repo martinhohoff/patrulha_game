@@ -210,6 +210,38 @@ body {
   padding-bottom: 8px;
 }
 
+.mobile-keyboard {
+  display: none;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  padding: 8px 0 4px;
+}
+
+.mobile-key {
+  min-height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #0b3d91;
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.15);
+}
+
+.mobile-key:active {
+  transform: scale(0.97);
+}
+
+.mobile-key:disabled {
+  opacity: 0.55;
+}
+
+.mobile-key.is-target {
+  background: #ffef9f;
+  box-shadow: 0 0 0 3px rgba(255, 180, 0, 0.35);
+}
+
 #end-screen {
   place-items: center;
   text-align: center;
@@ -236,4 +268,36 @@ body {
   }
 
   .target { font-size: 3.4rem; }
+
+  .screen {
+    min-height: 100vh;
+    width: 100vw;
+    border-radius: 0;
+    padding: 16px;
+  }
+
+  .track {
+    height: 300px;
+    padding-left: 16px;
+  }
+
+  .character {
+    width: 88px;
+    height: 88px;
+  }
+
+  .ryder-corner {
+    width: 120px;
+  }
+
+  .instruction {
+    font-size: 1.15rem;
+    padding-bottom: 0;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (max-width: 900px) {
+  .mobile-keyboard {
+    display: grid;
+  }
 }
